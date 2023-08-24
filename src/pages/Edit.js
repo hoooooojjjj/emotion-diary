@@ -13,8 +13,12 @@ const Edit = () => {
   const diaryList = useContext(DiaryStateContext);
   // path moving
   const nav = useNavigate(); // 강제로 다른 경로로 보내버릴 때 등에 사용할 수 있음. 뒤로가기, 앞으로 가기 등도 가능
-
   const [orginData, setorginData] = useState();
+
+  useEffect(() => {
+    const title = document.getElementsByTagName("title")[0];
+    title.innerHTML = `감정 일기장 - ${id}번 일기 수정 `;
+  }, []);
   useEffect(() => {
     if (diaryList.length >= 1) {
       const targetDiary = diaryList.find((it) => {

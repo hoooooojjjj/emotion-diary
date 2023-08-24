@@ -12,6 +12,10 @@ const Home = () => {
   const headText = `${curDate.getFullYear()}년 ${curDate.getMonth() + 1}월`;
 
   useEffect(() => {
+    const title = document.getElementsByTagName("title")[0];
+    title.innerHTML = `감정 일기장`;
+  }, []);
+  useEffect(() => {
     // 일기 리스트가 존재 할 때만 작업을 수행하여 최적화
     if (Diarylist.length >= 1) {
       //  (사용자가 변경한)현재 curDate 달의 첫 날짜의 밀리세컨즈
