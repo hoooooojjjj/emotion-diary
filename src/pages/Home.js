@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import Myheader from "./../components/Myheader.js";
 import Mybutton from "./../components/Mybutton.js";
 import DiaryList from "./../components/DiaryList.js";
-import { DiaryStateContext } from "../App.js";
+import { DiaryStateContext } from "../App";
 
 const Home = () => {
   const Diarylist = useContext(DiaryStateContext);
@@ -24,7 +24,10 @@ const Home = () => {
       const lastDay = new Date(
         curDate.getFullYear(),
         curDate.getMonth() + 1,
-        0
+        0,
+        23,
+        59,
+        59
       ).getTime();
       // 현재 curDate 달의 첫 날짜와 마지막 날짜 사이에 있는 일기 리스트만 필터링
       setdata(

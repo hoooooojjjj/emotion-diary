@@ -1,4 +1,7 @@
 import { useState } from "react";
+import Mybutton from "./Mybutton";
+import { useNavigate } from "react-router-dom";
+import DiaryItem from "./DiaryItem";
 
 const sortOptionList = [
   {
@@ -28,6 +31,7 @@ const filterOptionList = [
 const ControlMenu = ({ value, onChange, optionList }) => {
   return (
     <select
+      className="ControlMenu"
       value={value}
       onChange={(e) => {
         onChange(e.target.value);
@@ -45,6 +49,7 @@ const ControlMenu = ({ value, onChange, optionList }) => {
 const DiaryList = ({ DiaryList }) => {
   const [sortType, serSortType] = useState("lastest");
   const [filter, setfilter] = useState("all");
+  const nav = useNavigate();
 
   // 정렬 함수
   const getProcessedDiaryList = () => {
@@ -76,28 +81,37 @@ const DiaryList = ({ DiaryList }) => {
         : copyList.filter((it) => {
             return filterCallback(it);
           });
-    console.log(filteredList);
     const sortedList = filteredList.sort(compare);
     return sortedList;
   };
 
   return (
-    <div>
-      <ControlMenu
-        value={sortType}
-        onChange={serSortType}
-        optionList={sortOptionList}
-      />
-      <ControlMenu
-        value={filter}
-        onChange={setfilter}
-        optionList={filterOptionList}
-      />
-      {getProcessedDiaryList().map((item) => (
-        <div key={item.id}>
-          {item.content}
-          {item.emotion}
+    <div className="DiaryList">
+      <div className="menu_wrapper">
+        <div className="left_col">
+          <ControlMenu
+            value={sortType}
+            onChange={serSortType}
+            optionList={sortOptionList}
+          />
+          <ControlMenu
+            value={filter}
+            onChange={setfilter}
+            optionList={filterOptionList}
+          />
         </div>
+        <div className="right_col">
+          <Mybutton
+            type={"positive"}
+            text={"새 일기 쓰기"}
+            onclick={() => {
+              nav("/new");
+            }}
+          />
+        </div>
+      </div>
+      {getProcessedDiaryList().map((item) => (
+        <DiaryItem key={item.id} {...item} />
       ))}
     </div>
   );

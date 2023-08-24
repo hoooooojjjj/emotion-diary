@@ -1,4 +1,4 @@
-import React, { useMemo, useReducer, useRef } from "react";
+import React, { useEffect, useMemo, useReducer, useRef } from "react";
 import "./App.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
@@ -14,69 +14,60 @@ const reducer = (state, action) => {
     case "INIT": {
       return action.data;
     }
-    case "CREATE":
-      {
-        newState = [...action.data, , ...state];
-      }
+    case "CREATE": {
+      newState = [action.data, ...state];
       break;
+    }
     case "REMOVE": {
       newState = state.filter((item) => item.id !== action.targetId);
       break;
     }
     case "EDIT": {
       newState = state.map((item) =>
-        item.id === action.data.id ? { ...action.data } : it
+        item.id === action.data.id ? { ...action.data } : item
       );
       break;
     }
     default:
       return state;
   }
+  // 모든 데이터를 변경하는 reducer함수에 "마지막에 newState를 리턴시키고 그 전에 localStorige에 newState를 저장"하면,
+  // 저절로 모든 것이 로컬 스토로지에 저장됨!
+  localStorage.setItem("diary", JSON.stringify(newState));
+  return newState;
 };
 
 export const DiaryStateContext = React.createContext();
 export const DiaryDispatchContext = React.createContext();
-const dummydata = [
-  {
-    id: 1,
-    content: "일기 1번",
-    date: 1692710029216,
-    emotion: 1,
-  },
-  {
-    id: 2,
-    content: "일기 2번",
-    date: 1692710029217,
-    emotion: 2,
-  },
-  {
-    id: 3,
-    content: "일기 3번",
-    date: 1692710029218,
-    emotion: 3,
-  },
-  {
-    id: 4,
-    content: "일기 4번",
-    date: 1692710029219,
-    emotion: 4,
-  },
-  {
-    id: 5,
-    content: "일기 5번",
-    date: 1692710029220,
-    emotion: 5,
-  },
-];
+
 function App() {
-  const [data, dispatch] = useReducer(reducer, dummydata);
+  const [data, dispatch] = useReducer(reducer, []);
+
+  useEffect(() => {
+    // 로컬 스토리지에서 저장한 Id와 새로고침하고 다시 생성한 id가 겹침
+    // 그래서 dataId를 저정한 배열의 Id의 최댓값의 +1을 해줌
+    const localData = localStorage.getItem("diary");
+    if (localData) {
+      // 오름차순 정렬
+      const DiaryList = JSON.parse(localData).sort((a, b) => {
+        return parseInt(b.id) - parseInt(a.id);
+      });
+      // 최댓값의 +1
+      if (DiaryList.length > 0) {
+        dataId.current = parseInt(DiaryList[0].id) + 1;
+      }
+
+      // state의 초깃값을 getitem으로 설정
+      dispatch({ type: "INIT", data: JSON.parse(localData) });
+    }
+  }, []);
 
   const dataId = useRef(0);
 
   const onCreate = (date, content, emotion) => {
     dispatch({
       type: "CREATE",
-      date: {
+      data: {
         id: dataId.current,
         date: new Date(date).getTime(),
         content,
@@ -113,7 +104,7 @@ function App() {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/new" element={<New />} />
-              <Route path="/edit" element={<Edit />} />
+              <Route path="/edit/:id" element={<Edit />} />
               {/* // Path Variable */}
               <Route path="/diary/:id" element={<Diary />} />
               {/* <Route path="/diary:" element={<Diary />} /> => id없는 페이지가 존재한다면 예외처리해줘야함.*/}
