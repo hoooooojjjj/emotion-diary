@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import Myheader from "./../components/Myheader.js";
 import Mybutton from "./../components/Mybutton.js";
 import DiaryList from "./../components/DiaryList.js";
@@ -38,14 +38,19 @@ const Home = () => {
     }
   }, [curDate, Diarylist]);
 
-  const increaseMonth = () => {
+  const increaseMonth = useCallback(() => {
     // new Date에 인자로 원하는 날짜를 넣어주면 그 날짜대로 날짜를 출력함. -> 원하는 날짜를 가져올 수 있다.
     // 그래서 날짜를 추가 , 빼기 하려면 상태변화함수에 new Date(추가, 뺴기 할 날짜)를 인자로 넣어주면 됨.
     // 이렇게 하면 단순히 숫자만 변하는 것이 아니라 진짜 날짜가 바뀜.
     setcurDate(
-      new Date(curDate.getFullYear(), curDate.getMonth() + 1, curDate.getDate())
+      (curDate) =>
+        new Date(
+          curDate.getFullYear(),
+          curDate.getMonth() + 1,
+          curDate.getDate()
+        )
     );
-  };
+  }, []);
   const decreaseMonth = () => {
     setcurDate(
       new Date(curDate.getFullYear(), curDate.getMonth() - 1, curDate.getDate())

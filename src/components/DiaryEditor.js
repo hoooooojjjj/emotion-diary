@@ -1,7 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import Mybutton from "./Mybutton";
 import Myheader from "./Myheader";
-import { useContext, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import EmotionItem from "./EmotionItem";
 import { DiaryDispatchContext } from "../App";
 import { getStingDate } from "../util/date";
@@ -24,9 +30,9 @@ const DiaryEditor = ({ isEdit, orginData }) => {
   const [emotion, setemotion] = useState(3);
   const [content, setcontent] = useState("");
 
-  const handleClickEmote = (emotion) => {
+  const handleClickEmote = useCallback((emotion) => {
     setemotion(emotion);
-  };
+  }, []);
 
   const handleSudmit = () => {
     if (content.length < 1) {
@@ -136,4 +142,4 @@ const DiaryEditor = ({ isEdit, orginData }) => {
   );
 };
 
-export default DiaryEditor;
+export default React.memo(DiaryEditor);
