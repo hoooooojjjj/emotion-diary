@@ -46,6 +46,7 @@ const DiaryList = ({ DiaryList }) => {
   const [sortType, serSortType] = useState("lastest");
   const [filter, setfilter] = useState("all");
 
+  // 정렬 함수
   const getProcessedDiaryList = () => {
     const filterCallback = (item) => {
       if (filter === "good") {
@@ -73,7 +74,7 @@ const DiaryList = ({ DiaryList }) => {
       filter === "all"
         ? copyList
         : copyList.filter((it) => {
-            filterCallback(it);
+            return filterCallback(it);
           });
     console.log(filteredList);
     const sortedList = filteredList.sort(compare);
